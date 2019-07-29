@@ -7,7 +7,7 @@ import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 class MainActivity : AppCompatActivity(), CoroutineScope {
-    private val job = Job()
+    private val job = SupervisorJob()
 
     override val coroutineContext: CoroutineContext get() = job + Dispatchers.Main
 
