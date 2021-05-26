@@ -1,21 +1,19 @@
 package com.werockstar.withcoroutines
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
 
-class MainActivity : AppCompatActivity(), CoroutineScope {
-    private val job = SupervisorJob()
+class MainActivity : AppCompatActivity() {
 
-    override val coroutineContext: CoroutineContext get() = job + Dispatchers.Main
+    private val job by lazy { MainScope() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        launch {
+        job.launch {
             val one = async(start = CoroutineStart.LAZY) { one() }
             val two = async(start = CoroutineStart.LAZY) { two() }
             one.start()
@@ -23,7 +21,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
             Log.d("Result", "${one.await() + two.await()}")
         }
 
-        launch {
+        job.launch {
             val one = async(start = CoroutineStart.LAZY) { one() }
             val two = async(start = CoroutineStart.LAZY) { two() }
             Log.d("Result", "${one.await() + two.await()}")
@@ -46,4 +44,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
         "Hello"
     }
 
+
+    override fun onDestroy() {
+        job.cancel()
+        super.onDestroy()
+    }
 }
