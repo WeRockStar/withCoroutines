@@ -1,14 +1,17 @@
 package com.werockstar.withcoroutines.remote
 
-import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 object HttpFactory {
 
 	private fun createOkHttp(): OkHttpClient {
+		val logging = HttpLoggingInterceptor()
+		logging.level = HttpLoggingInterceptor.Level.BASIC
 		return OkHttpClient.Builder()
+			.addInterceptor(logging)
 			.build()
 	}
 

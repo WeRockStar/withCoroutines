@@ -5,7 +5,8 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.werockstar.withcoroutines.remote.HttpFactory
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,12 +18,13 @@ class MainActivity : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 
-		MainScope().launch {
-			viewModel.fetchUser("WeRockStar")
-				.collect {
+		viewModel.fetchUser("WeRockStar")
+			.onEach {  }
+			.launchIn(job)
 
-				}
-		}
+		viewModel.zip()
+			.onEach {  }
+			.launchIn(job)
 
 		job.launch {
 			val one = async(start = CoroutineStart.LAZY) { one() }

@@ -3,20 +3,20 @@ package com.werockstar.withcoroutines.remote.model
 import com.squareup.moshi.Json
 
 data class UserResponse(
-	@field:Json(name = "avatar_url")
+	@Json(name = "avatar_url")
 	val avatarUrl: String,
-	@field:Json(name = "bio")
+	@Json(name = "bio")
 	val bio: String,
-	@field:Json(name = "company")
+	@Json(name = "company")
 	val company: String,
-	@field:Json(name = "id")
+	@Json(name = "id")
 	val id: Int,
-	@field:Json(name = "location")
+	@Json(name = "location")
 	val location: String,
-	@field:Json(name = "login")
+	@Json(name = "login")
 	val username: String,
-	@field:Json(name = "name")
+	@Json(name = "name")
 	val name: String,
-	@field:Json(name = "url")
+	@Json(name = "url")
 	val url: String
 )
