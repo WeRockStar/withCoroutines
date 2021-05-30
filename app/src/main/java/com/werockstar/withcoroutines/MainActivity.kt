@@ -3,50 +3,61 @@ package com.werockstar.withcoroutines
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.werockstar.withcoroutines.remote.HttpFactory
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 
 class MainActivity : AppCompatActivity() {
 
-    private val job by lazy { MainScope() }
+	private val job by lazy { MainScope() }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+	private val viewModel by lazy { MainViewModel(HttpFactory.createAPI()) }
 
-        job.launch {
-            val one = async(start = CoroutineStart.LAZY) { one() }
-            val two = async(start = CoroutineStart.LAZY) { two() }
-            one.start()
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		setContentView(R.layout.activity_main)
 
-            Log.d("Result", "${one.await() + two.await()}")
-        }
+		MainScope().launch {
+			viewModel.fetchUser("WeRockStar")
+				.collect {
 
-        job.launch {
-            val one = async(start = CoroutineStart.LAZY) { one() }
-            val two = async(start = CoroutineStart.LAZY) { two() }
-            Log.d("Result", "${one.await() + two.await()}")
-        }
-    }
+				}
+		}
 
-    private suspend fun one(): Int {
-        delay(1000L) // pretend we are doing something useful here
-        Log.d("Coroutines", "One")
-        return 13
-    }
+		job.launch {
+			val one = async(start = CoroutineStart.LAZY) { one() }
+			val two = async(start = CoroutineStart.LAZY) { two() }
+			one.start()
 
-    private suspend fun two(): Int {
-        delay(1000L) // pretend we are doing something useful here, too
-        Log.d("Coroutines", "Two")
-        return 29
-    }
+			Log.d("Result", "${one.await() + two.await()}")
+		}
 
-    private suspend fun getString(): String = withContext(Dispatchers.IO) {
-        "Hello"
-    }
+		job.launch {
+			val one = async(start = CoroutineStart.LAZY) { one() }
+			val two = async(start = CoroutineStart.LAZY) { two() }
+			Log.d("Result", "${one.await() + two.await()}")
+		}
+	}
+
+	private suspend fun one(): Int {
+		delay(1000L) // pretend we are doing something useful here
+		Log.d("Coroutines", "One")
+		return 13
+	}
+
+	private suspend fun two(): Int {
+		delay(1000L) // pretend we are doing something useful here, too
+		Log.d("Coroutines", "Two")
+		return 29
+	}
+
+	private suspend fun getString(): String = withContext(Dispatchers.IO) {
+		"Hello"
+	}
 
 
-    override fun onDestroy() {
-        job.cancel()
-        super.onDestroy()
-    }
+	override fun onDestroy() {
+		job.cancel()
+		super.onDestroy()
+	}
 }
