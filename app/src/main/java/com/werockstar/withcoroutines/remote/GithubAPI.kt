@@ -5,6 +5,6 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface GithubAPI {
-	@GET("users/{user}")
-	suspend fun fetchUser(@Path("user") user: String): UserResponse
+    @GET("users/{user}")
+    suspend fun fetchUser(@Path("user") user: String): UserResponse
 }
